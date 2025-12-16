@@ -55,17 +55,19 @@ Options: (basées sur .devcontainer/features/languages/*)
 
 | Langage | Architectures disponibles |
 |---------|---------------------------|
-| **Go** | Clean, Hexagonal, DDD, Microservices, Modular Monolith, Flat/CLI, Package/Library |
-| **Python** | MVC (Django), Layered, Clean, Hexagonal, DDD, Microservices, Serverless, Flat/Scripts, Package/Library |
-| **Node.js/TS** | MVC, MVVM, Layered, Clean, Hexagonal, DDD, Microservices, Serverless, Event-Driven, Package/Library |
-| **Rust** | Clean, Hexagonal, Microservices, Flat/CLI, Package/Library, Embedded |
-| **Java** | MVC, Layered, Clean, Hexagonal, Onion, DDD (all), Microservices, Modular Monolith, Event-Driven |
+| **Go** | Clean, Hexagonal, DDD, Microservices, Modular Monolith, **Sliceable Monolith**, Flat/CLI, Package/Library |
+| **Python** | MVC (Django), Layered, Clean, Hexagonal, DDD, Microservices, **Sliceable Monolith**, Serverless, Flat/Scripts, Package/Library |
+| **Node.js/TS** | MVC, MVVM, Layered, Clean, Hexagonal, DDD, Microservices, **Sliceable Monolith**, Serverless, Event-Driven, Package/Library |
+| **Rust** | Clean, Hexagonal, Microservices, **Sliceable Monolith**, Flat/CLI, Package/Library, Embedded |
+| **Java** | MVC, Layered, Clean, Hexagonal, Onion, DDD (all), Microservices, **Sliceable Monolith**, Event-Driven |
 | **C++** | Layered, Clean, Flat/CLI, Package/Library, Embedded |
-| **PHP** | MVC (Laravel/Symfony), Layered, Clean, Hexagonal, DDD, Microservices |
-| **Ruby** | MVC (Rails), Clean, Hexagonal, DDD, Modular Monolith |
+| **PHP** | MVC (Laravel/Symfony), Layered, Clean, Hexagonal, DDD, Microservices, **Sliceable Monolith** |
+| **Ruby** | MVC (Rails), Clean, Hexagonal, DDD, **Sliceable Monolith** |
 | **Dart/Flutter** | MVVM, Clean, BLoC Pattern, Package/Library |
-| **Elixir** | Phoenix (MVC), Hexagonal, Event-Driven, Umbrella (Modular) |
-| **Scala** | Layered, Clean, Hexagonal, DDD, Microservices, Event-Driven (Akka) |
+| **Elixir** | Phoenix (MVC), Hexagonal, Event-Driven, Umbrella (Modular), **Sliceable Monolith** |
+| **Scala** | Layered, Clean, Hexagonal, DDD, Microservices, **Sliceable Monolith**, Event-Driven (Akka) |
+
+**Sliceable Monolith** = Modular Monolith avec extraction de domaines à la demande. Chaque domaine est autonome et peut être déployé séparément quand le trafic l'exige.
 
 ```
 Question: "Quelle architecture ?" (adapté au langage)
@@ -143,10 +145,84 @@ Options: <voir tableau + règles ci-dessus>
 | DDD + Event Sourcing | `/src/{domain,events,projections,aggregates}` |
 | Microservices | `/src/services/<service>/{...}` |
 | Modular Monolith | `/src/modules/<module>/{...}` |
+| **Sliceable Monolith** | Voir structure détaillée ci-dessous |
 | Event-Driven | `/src/{producers,consumers,events}` |
 | Serverless | `/src/functions/<function>` |
 | Flat/Scripts | `/src/` (flat) |
 | Package/Library | `/src/{lib,internal}` |
+
+#### Structure Sliceable Monolith (détail)
+
+```
+/src
+├── shared/                          # Shared Kernel (commun à tous)
+│   ├── kernel/                      # Types, interfaces partagés
+│   │   ├── types/
+│   │   ├── errors/
+│   │   └── events/                  # Domain events communs
+│   └── infrastructure/              # Infra partagée
+│       ├── database/
+│       ├── messaging/
+│       ├── logging/
+│       └── config/
+│
+├── domains/                         # Bounded Contexts (extractibles)
+│   ├── <domain-a>/                  # Ex: auth, billing, orders...
+│   │   ├── api/                     # Endpoints REST/gRPC
+│   │   │   ├── handlers/
+│   │   │   ├── middleware/
+│   │   │   └── routes.go
+│   │   ├── application/             # Use cases
+│   │   │   ├── commands/
+│   │   │   ├── queries/
+│   │   │   └── services/
+│   │   ├── domain/                  # Business logic pure
+│   │   │   ├── entities/
+│   │   │   ├── valueobjects/
+│   │   │   ├── aggregates/
+│   │   │   ├── repositories/        # Interfaces
+│   │   │   └── events/
+│   │   ├── infrastructure/          # Implémentations
+│   │   │   ├── persistence/
+│   │   │   ├── external/
+│   │   │   └── adapters/
+│   │   ├── Dockerfile               # ← Deployable seul
+│   │   ├── main.go                  # ← Entry point isolé
+│   │   └── config.yaml
+│   │
+│   ├── <domain-b>/
+│   │   └── ... (même structure)
+│   └── ...
+│
+├── gateway/                         # API Gateway (optionnel)
+│   ├── routing/
+│   └── aggregation/
+│
+├── cmd/                             # Entry points
+│   ├── monolith/                    # Tous les domains ensemble
+│   │   └── main.go
+│   └── <domain>/                    # Un domain seul (généré)
+│       └── main.go
+│
+├── deployments/
+│   ├── docker-compose.yml           # Tout en un
+│   ├── docker-compose.extracted.yml # Avec domains extraits
+│   └── k8s/
+│       ├── monolith/
+│       └── domains/
+│           └── <domain>/
+│
+└── Makefile                         # build, extract, deploy commands
+```
+
+**Commandes d'extraction:**
+```bash
+make build                    # Build monolithe complet
+make build-domain DOMAIN=billing  # Build domain seul
+make extract DOMAIN=billing   # Génère tout pour déployer seul
+make deploy-monolith          # Deploy tout ensemble
+make deploy-extracted         # Deploy avec billing séparé
+```
 
 ```bash
 mkdir -p /src/<structure_selon_architecture>
