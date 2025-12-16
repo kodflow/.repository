@@ -58,6 +58,14 @@ if [ -f "$MCP_TPL" ]; then
 fi
 
 # ============================================================================
+# Git Credential Cleanup (remove macOS-specific helpers)
+# ============================================================================
+log_info "Cleaning git credential helpers..."
+git config --global --unset-all credential.https://github.com.helper 2>/dev/null || true
+git config --global --unset-all credential.https://gist.github.com.helper 2>/dev/null || true
+log_success "Git credential helpers cleaned"
+
+# ============================================================================
 # Claude CLI Configuration
 # ============================================================================
 log_info "Configuring Claude CLI..."
