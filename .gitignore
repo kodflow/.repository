@@ -10,6 +10,13 @@ ehthumbs.db
 Thumbs.db
 
 # ============================================
+# Claude Context Files (auto-generated)
+# ============================================
+# Ignore all CLAUDE.md except root
+**/CLAUDE.md
+!CLAUDE.md
+
+# ============================================
 # Environment & Secrets (CRITICAL)
 # ============================================
 .env

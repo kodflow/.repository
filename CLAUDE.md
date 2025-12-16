@@ -12,18 +12,38 @@
 
 | Commande | Action |
 |----------|--------|
-| `/build --project <desc>` | Crée un projet avec tâches auto-générées |
-| `/build --for <project> --task <desc>` | Ajoute une tâche au projet |
+| `/build --context` | Génère CLAUDE.md dans tous les dossiers |
+| `/build --project <desc>` | Crée projet + tâches auto |
+| `/build --for <project> --task <desc>` | Ajoute une tâche |
 | `/build --for <project> --task <id>` | Met à jour une tâche |
-| `/build --list` | Liste tous les projets |
-| `/build --for <project> --list` | Liste les tâches du projet |
+| `/build --list` | Liste les projets |
+| `/build --for <project> --list` | Liste les tâches |
 
 ### /run - Exécution
 
 | Commande | Action |
 |----------|--------|
-| `/run <project>` | Exécute toutes les tâches du projet |
-| `/run --for <project> --task <id>` | Exécute une tâche spécifique |
+| `/run <project>` | Exécute tout le projet |
+| `/run --for <project> --task <id>` | Exécute une tâche |
+
+## Contexte (CLAUDE.md)
+
+### Principe : Entonnoir
+
+```
+/CLAUDE.md              → Vue d'ensemble (commité)
+/src/CLAUDE.md          → Détails src (ignoré)
+/src/components/CLAUDE.md → Plus de détails (ignoré)
+```
+
+Plus on descend, plus c'est détaillé.
+
+### Règles
+
+- < 60 lignes par fichier
+- Concis et universel
+- Divulgation progressive
+- Sous-dossiers JAMAIS commités
 
 ## Taskwarrior
 
@@ -31,25 +51,14 @@
 
 | Attribut | Valeurs | Auto-détection |
 |----------|---------|----------------|
-| `model` | haiku, sonnet, opus | Complexité de la tâche |
-| `parallel` | yes, no | Dépendances entre tâches |
-| `phase` | 1, 2, 3... | Ordre d'exécution |
+| `model` | haiku, sonnet, opus | Complexité |
+| `parallel` | yes, no | Dépendances |
+| `phase` | 1, 2, 3... | Ordre |
 
 ### Workflow
 
 ```
-/build --project "Implémenter auth OAuth"
-    ↓
-Analyse + Questions + Plan auto
-    ↓
-/build --list  (voir les projets)
-/build --for auth-oauth --list  (voir les tâches)
-    ↓
-/run auth-oauth  (exécute tout)
+/build --context              → Génère le contexte
+/build --project "Auth OAuth" → Planifie les tâches
+/run auth-oauth               → Exécute
 ```
-
-### Tags Taskwarrior
-
-- `+claude` : Tâches gérées par Claude
-- `+BLOCKED` : En attente de dépendances
-- `+ACTIVE` : En cours d'exécution
