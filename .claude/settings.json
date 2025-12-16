@@ -85,7 +85,7 @@
           {
             "type": "command",
             "command": "/workspace/.claude/scripts/pre-validate.sh \"$CLAUDE_FILE_PATH\"",
-            "timeout": 5
+            "timeout": 60
           }
         ]
       }
@@ -97,7 +97,7 @@
           {
             "type": "command",
             "command": "/workspace/.claude/scripts/post-edit.sh \"$CLAUDE_FILE_PATH\"",
-            "timeout": 30
+            "timeout": 60
           }
         ]
       },
@@ -107,7 +107,7 @@
           {
             "type": "command",
             "command": "/workspace/.claude/scripts/security.sh \"$CLAUDE_FILE_PATH\"",
-            "timeout": 15
+            "timeout": 60
           }
         ]
       },
@@ -129,7 +129,7 @@
           {
             "type": "command",
             "command": "command -v notify-send >/dev/null 2>&1 && notify-send 'Claude Code' 'Task completed' 2>/dev/null || true",
-            "timeout": 5
+            "timeout": 60
           }
         ]
       }
