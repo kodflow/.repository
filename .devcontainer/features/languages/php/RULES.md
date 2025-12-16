@@ -1,4 +1,5 @@
 # PHP >= 8.4.0
+> Release Notes: https://www.php.net/releases/
 
 ## Structure
 

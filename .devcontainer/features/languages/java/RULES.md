@@ -1,4 +1,5 @@
 # Java >= 23
+> Release Notes: https://adoptium.net/temurin/release-notes/
 
 ## Structure
 

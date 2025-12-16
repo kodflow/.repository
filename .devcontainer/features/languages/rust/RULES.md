@@ -1,4 +1,5 @@
 # Rust >= 1.83.0
+> Release Notes: https://releases.rs/
 
 ## Structure
 

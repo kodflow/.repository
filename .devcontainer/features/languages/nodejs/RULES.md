@@ -1,4 +1,5 @@
 # Node.js >= 22.0.0
+> Release Notes: https://nodejs.org/en/blog/release
 
 ## Structure
 

@@ -1,4 +1,5 @@
 # Scala >= 3.5.0
+> Release Notes: https://github.com/scala/scala3/releases
 
 ## Structure
 

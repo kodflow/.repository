@@ -1,4 +1,5 @@
 # Carbon >= 0.1.0 (Experimental)
+> Release Notes: https://github.com/carbon-language/carbon-lang/releases
 
 **WARNING:** Carbon is experimental. Rules may change.
 

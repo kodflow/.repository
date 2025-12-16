@@ -1,4 +1,5 @@
 # Go >= 1.23.0
+> Release Notes: https://go.dev/doc/devel/release
 
 ## Structure
 

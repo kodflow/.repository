@@ -31,25 +31,31 @@ Analyse TOUT le projet et crée un `CLAUDE.md` dans CHAQUE dossier (sauf racine)
 
 **Avant toute génération**, récupérer les dernières versions officielles :
 
-| Langage | Source officielle | Commande/URL |
-|---------|-------------------|--------------|
-| Go | go.dev | `curl -s https://go.dev/VERSION?m=text` |
-| Python | python.org | `curl -s https://endoflife.date/api/python.json \| jq -r '.[0].latest'` |
-| Node.js | nodejs.org | `curl -s https://nodejs.org/dist/index.json \| jq -r '.[0].version'` |
-| Rust | rust-lang.org | `curl -s https://static.rust-lang.org/dist/channel-rust-stable.toml \| grep -m1 'version ='` |
-| Java | adoptium.net | `curl -s https://api.adoptium.net/v3/info/available_releases \| jq '.most_recent_lts'` |
-| PHP | php.net | `curl -s https://www.php.net/releases/index.php?json \| jq -r 'keys[0]'` |
-| Ruby | ruby-lang.org | `curl -s https://cache.ruby-lang.org/pub/ruby/index.json \| jq -r '.releases[0].version'` |
-| Dart | dart.dev | `curl -s https://storage.googleapis.com/dart-archive/channels/stable/release/latest/VERSION` |
-| Elixir | elixir-lang.org | `curl -s https://api.github.com/repos/elixir-lang/elixir/releases/latest \| jq -r '.tag_name'` |
-| Scala | scala-lang.org | `curl -s https://api.github.com/repos/scala/scala3/releases/latest \| jq -r '.tag_name'` |
+| Langage | Source officielle | Release Notes |
+|---------|-------------------|---------------|
+| Go | go.dev | https://go.dev/doc/devel/release |
+| Python | python.org | https://docs.python.org/3/whatsnew/ |
+| Node.js | nodejs.org | https://nodejs.org/en/blog/release |
+| Rust | rust-lang.org | https://releases.rs/ |
+| Java | adoptium.net | https://adoptium.net/temurin/release-notes/ |
+| C++ | isocpp.org | https://en.cppreference.com/w/cpp/compiler_support |
+| PHP | php.net | https://www.php.net/releases/ |
+| Ruby | ruby-lang.org | https://www.ruby-lang.org/en/news/ |
+| Dart | dart.dev | https://dart.dev/get-dart |
+| Flutter | flutter.dev | https://docs.flutter.dev/release/release-notes |
+| Elixir | elixir-lang.org | https://github.com/elixir-lang/elixir/releases |
+| Scala | scala-lang.org | https://github.com/scala/scala3/releases |
+| Carbon | carbon-lang | https://github.com/carbon-language/carbon-lang/releases |
 
-**Mettre à jour RULES.md** : Modifier la première ligne de chaque `.devcontainer/features/languages/*/RULES.md` avec la nouvelle version.
+**Mettre à jour RULES.md** :
+1. Modifier la première ligne avec la nouvelle version
+2. Ajouter/mettre à jour le lien vers les release notes (ligne 2)
 
 ```bash
 # Exemple pour Go
 VERSION=$(curl -s https://go.dev/VERSION?m=text | head -1 | sed 's/go//')
 sed -i "1s/.*/# Go >= $VERSION/" .devcontainer/features/languages/go/RULES.md
+# Le lien release est déjà en ligne 2 du fichier
 ```
 
 **IMPORTANT** : Ne JAMAIS downgrader une version. Si la version actuelle est supérieure, conserver l'actuelle.
