@@ -27,6 +27,33 @@ Analyse TOUT le projet et crée un `CLAUDE.md` dans CHAQUE dossier (sauf racine)
 - Plus on descend dans l'arborescence, plus le contenu est détaillé
 - Chaque niveau hérite du contexte parent mais ajoute des spécificités
 
+#### 0. Mise à jour des versions (OBLIGATOIRE)
+
+**Avant toute génération**, récupérer les dernières versions officielles :
+
+| Langage | Source officielle | Commande/URL |
+|---------|-------------------|--------------|
+| Go | go.dev | `curl -s https://go.dev/VERSION?m=text` |
+| Python | python.org | `curl -s https://endoflife.date/api/python.json \| jq -r '.[0].latest'` |
+| Node.js | nodejs.org | `curl -s https://nodejs.org/dist/index.json \| jq -r '.[0].version'` |
+| Rust | rust-lang.org | `curl -s https://static.rust-lang.org/dist/channel-rust-stable.toml \| grep -m1 'version ='` |
+| Java | adoptium.net | `curl -s https://api.adoptium.net/v3/info/available_releases \| jq '.most_recent_lts'` |
+| PHP | php.net | `curl -s https://www.php.net/releases/index.php?json \| jq -r 'keys[0]'` |
+| Ruby | ruby-lang.org | `curl -s https://cache.ruby-lang.org/pub/ruby/index.json \| jq -r '.releases[0].version'` |
+| Dart | dart.dev | `curl -s https://storage.googleapis.com/dart-archive/channels/stable/release/latest/VERSION` |
+| Elixir | elixir-lang.org | `curl -s https://api.github.com/repos/elixir-lang/elixir/releases/latest \| jq -r '.tag_name'` |
+| Scala | scala-lang.org | `curl -s https://api.github.com/repos/scala/scala3/releases/latest \| jq -r '.tag_name'` |
+
+**Mettre à jour RULES.md** : Modifier la première ligne de chaque `.devcontainer/features/languages/*/RULES.md` avec la nouvelle version.
+
+```bash
+# Exemple pour Go
+VERSION=$(curl -s https://go.dev/VERSION?m=text | head -1 | sed 's/go//')
+sed -i "1s/.*/# Go >= $VERSION/" .devcontainer/features/languages/go/RULES.md
+```
+
+**IMPORTANT** : Ne JAMAIS downgrader une version. Si la version actuelle est supérieure, conserver l'actuelle.
+
 #### Règles de génération
 
 | Niveau | Lignes max | Contenu |

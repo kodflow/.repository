@@ -1,89 +1,90 @@
 # Kodflow DevContainer Template
 
-## Stack
-
-- Ubuntu 24.04 LTS
-- Zsh + Powerlevel10k
-- Docker + DevContainer
-
-## Slash Commands
-
-### /build - Planification
-
-| Commande | Action |
-|----------|--------|
-| `/build --context` | Génère CLAUDE.md dans tous les dossiers |
-| `/build --project <desc>` | Crée projet + tâches auto |
-| `/build --for <project> --task <desc>` | Ajoute une tâche |
-| `/build --for <project> --task <id>` | Met à jour une tâche |
-| `/build --list` | Liste les projets |
-| `/build --for <project> --list` | Liste les tâches |
-
-### /run - Exécution
-
-| Commande | Action |
-|----------|--------|
-| `/run <project>` | Exécute tout le projet |
-| `/run --for <project> --task <id>` | Exécute une tâche |
-
-## Hooks
-
-### Scripts disponibles (`.claude/scripts/`)
-
-| Script | Fonction | Langages |
-|--------|----------|----------|
-| `format.sh` | Auto-format | JS/TS, Python, Go, Rust, JSON, YAML, Terraform |
-| `lint.sh` | Linting + fix | JS/TS, Python, Go, Rust, Shell, Dockerfile |
-| `imports.sh` | Tri imports | JS/TS, Python, Go, Rust, Java |
-| `typecheck.sh` | Type check | TypeScript, Python, Go, Rust |
-| `security.sh` | Détection secrets | Tous |
-| `test.sh` | Tests auto | JS/TS, Python, Go, Rust |
-| `pre-validate.sh` | Protection fichiers | Tous |
-| `post-edit.sh` | Format + Imports + Lint | Tous |
-
-### Configuration active
+## Project Structure (MANDATORY)
 
 ```
-PreToolUse (Write|Edit):
-  → pre-validate.sh (protection fichiers sensibles)
-
-PostToolUse (Write|Edit):
-  → post-edit.sh (format + imports + lint)
-  → security.sh (détection secrets)
-  → test.sh (si fichier test)
+/workspace
+├── src/                    # ALL source code (mandatory)
+│   ├── components/
+│   ├── services/
+│   └── ...
+├── tests/                  # Unit tests (optional, not for Go)
+├── docs/                   # Documentation
+└── CLAUDE.md
 ```
 
-## Contexte (CLAUDE.md)
+**Rules:**
+- ALL code MUST be in `/src` regardless of language
+- Tests in `/tests` (except Go: tests alongside code in `/src`)
+- Never put code at project root
 
-### Principe : Entonnoir
+## Language Rules
+
+**STRICT**: Follow rules in `.devcontainer/features/languages/<lang>/RULES.md`
+
+Each RULES.md contains:
+1. **Line 1**: Required version (NEVER downgrade)
+2. Code style and conventions
+3. Project structure requirements
+4. Testing standards
+
+## Workflow (MANDATORY)
+
+### 1. Context Generation
+```
+/build --context
+```
+Generates CLAUDE.md in all subdirectories + fetches latest language versions.
+
+### 2. Task Planning
+```
+/build --project "Feature description"
+/build --for <project> --task "Task description"
+/build --list
+```
+
+### 3. Task Execution
+```
+/run <project>
+/run --for <project> --task <id>
+```
+
+**Flow:**
+```
+/build --context → /build --project "..." → /run <project>
+```
+
+## Taskwarrior UDAs
+
+| Attribute | Values | Usage |
+|-----------|--------|-------|
+| `model` | haiku, sonnet, opus | Task complexity |
+| `parallel` | yes, no | Can run concurrently |
+| `phase` | 1, 2, 3... | Execution order |
+
+## Code Quality
+
+- Latest stable version ONLY (see RULES.md)
+- No deprecated APIs
+- No legacy patterns
+- Security-first approach
+- Full test coverage
+
+## Hooks (Auto-applied)
+
+| Hook | Action |
+|------|--------|
+| `pre-validate.sh` | Protect sensitive files |
+| `post-edit.sh` | Format + Imports + Lint |
+| `security.sh` | Secret detection |
+| `test.sh` | Run related tests |
+
+## Context Hierarchy
 
 ```
-/CLAUDE.md              → Vue d'ensemble (commité)
-/src/CLAUDE.md          → Détails src (ignoré)
-/src/components/        → Plus de détails (ignoré)
+/CLAUDE.md              → Overview (committed)
+/src/CLAUDE.md          → src details (gitignored)
+/src/api/CLAUDE.md      → API details (gitignored)
 ```
 
-### Règles
-
-- < 60 lignes par fichier
-- Concis et universel
-- Divulgation progressive
-- Sous-dossiers JAMAIS commités
-
-## Taskwarrior
-
-### UDAs
-
-| Attribut | Valeurs |
-|----------|---------|
-| `model` | haiku, sonnet, opus |
-| `parallel` | yes, no |
-| `phase` | 1, 2, 3... |
-
-### Workflow
-
-```
-/build --context              → Génère le contexte
-/build --project "Auth OAuth" → Planifie les tâches
-/run auth-oauth               → Exécute
-```
+**Principle:** More details deeper in tree, <60 lines each.
