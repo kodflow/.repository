@@ -1,60 +1,51 @@
 # Kodflow DevContainer Template
 
-## Projet
-
-Template DevContainer avec Claude Code, outils DevOps et gestion de tâches Taskwarrior.
-
 ## Stack
 
-- Base: Ubuntu 24.04 LTS
-- Shell: Zsh + Powerlevel10k
-- Container: Docker + DevContainer
+- Ubuntu 24.04 LTS
+- Zsh + Powerlevel10k
+- Docker + DevContainer
 
 ## Commandes
 
 ```bash
-# Build
-docker compose -f .devcontainer/docker-compose.yml build
-
-# Claude avec MCP
-super-claude
+super-claude              # Claude avec MCP
 ```
 
 ## Slash Commands
 
 | Commande | Description |
 |----------|-------------|
-| `/task <description>` | Analyse et planifie des tâches avec Taskwarrior |
-| `/tasks [filtre]` | Affiche l'état des tâches du projet |
-| `/run [id\|--all]` | Exécute les tâches prêtes |
-| `/init-tasks` | Initialise Taskwarrior avec les UDAs Claude |
+| `/build` | Planifie les tâches (Taskwarrior) |
+| `/build --list` | Liste les tâches du projet |
+| `/run` | Exécute toutes les tâches |
+| `/run --list` | Liste les tâches |
+| `/run <ID>` | Exécute une tâche spécifique |
 
-## Taskwarrior UDAs
+## Taskwarrior
 
-| Attribut | Type | Valeurs | Description |
-|----------|------|---------|-------------|
-| `model` | string | opus, sonnet, haiku | Modèle Claude |
-| `agent` | string | - | Agent/subagent |
-| `parallel` | string | yes, no | Parallélisable |
-| `phase` | numeric | 1, 2, 3... | Ordre d'exécution |
-| `estimate` | numeric | - | Estimation (minutes) |
+### UDAs
 
-## Workflow tâches
+| Attribut | Valeurs |
+|----------|---------|
+| `model` | opus, sonnet, haiku |
+| `parallel` | yes, no |
+| `phase` | 1, 2, 3... |
+
+### Workflow
 
 ```
-/task "description"  →  Analyse + Questions  →  Plan  →  task add
-/tasks               →  Vue des tâches prêtes
-/run                 →  Exécution séquentielle/parallèle
+/build "description"  →  Questions + Analyse + Plan
+/run                  →  Exécution phase par phase
 ```
 
-## Conventions
+### Tags
 
-- Tags: `+claude` pour toutes les tâches gérées par Claude
-- Projet: Nom du dossier courant
-- Dépendances: `depends:ID` pour le séquencement
-- Phases: Groupement pour parallélisation
+- `+claude` : Tâches gérées par Claude
+- `+BLOCKED` : En attente de dépendances
+- `+ACTIVE` : En cours d'exécution
 
 ## Ne pas faire
 
 - Ne pas modifier `.devcontainer/images/Dockerfile` sans rebuild CI
-- Ne pas commit de tokens/secrets (`.mcp.json` est ignoré)
+- Ne pas commit de tokens (`.mcp.json` ignoré)
