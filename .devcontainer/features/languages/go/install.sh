@@ -82,10 +82,15 @@ mkdir -p "$GOPATH/src"
 mkdir -p "$GOCACHE"
 mkdir -p "$GOMODCACHE"
 
-# Install ktn-linter (latest version)
+# Install ktn-linter (latest version) - direct download from GitHub releases
 echo -e "${YELLOW}Installing ktn-linter...${NC}"
-curl -sSL https://raw.githubusercontent.com/kodflow/ktn-linter/main/install.sh | bash
-echo -e "${GREEN}✓ ktn-linter installed${NC}"
+KTN_OS="linux"
+KTN_ARCH="$GO_ARCH"
+KTN_VERSION=$(curl -s https://api.github.com/repos/kodflow/ktn-linter/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+KTN_URL="https://github.com/kodflow/ktn-linter/releases/download/${KTN_VERSION}/ktn-linter-${KTN_OS}-${KTN_ARCH}"
+curl -fsSL -o "$GOPATH/bin/ktn-linter" "$KTN_URL"
+chmod +x "$GOPATH/bin/ktn-linter"
+echo -e "${GREEN}✓ ktn-linter ${KTN_VERSION} installed${NC}"
 
 echo ""
 echo -e "${GREEN}=========================================${NC}"
