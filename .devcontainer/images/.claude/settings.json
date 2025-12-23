@@ -69,6 +69,13 @@
       "Bash(date:*)",
       "Bash(env:*)",
       "Bash(printenv:*)",
+      "Bash(task:*)",
+      "Bash(task-init.sh:*)",
+      "Bash(task-epic.sh:*)",
+      "Bash(task-add.sh:*)",
+      "Bash(task-start.sh:*)",
+      "Bash(task-done.sh:*)",
+      "Bash(/home/vscode/.claude/scripts/*:*)",
       "Read(**/*)",
       "Glob(**/*)",
       "Grep(**/*)"
