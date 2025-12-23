@@ -36,7 +36,7 @@ PROJECT=$(echo "$DESC" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0
 BRANCH="${TYPE}/${PROJECT}"
 
 # Créer le dossier sessions si nécessaire
-SESSION_DIR="/workspace/.claude/sessions"
+SESSION_DIR="$HOME/.claude/sessions"
 mkdir -p "$SESSION_DIR"
 
 # Vérifier si une session existe déjà pour ce projet

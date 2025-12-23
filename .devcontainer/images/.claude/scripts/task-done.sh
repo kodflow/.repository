@@ -28,7 +28,7 @@ fi
 task uuid:"$TASK_UUID" done 2>/dev/null || true
 
 # Mettre à jour la session si elle existe
-SESSION_DIR="/workspace/.claude/sessions"
+SESSION_DIR="$HOME/.claude/sessions"
 SESSION_FILE=$(ls -t "$SESSION_DIR"/*.json 2>/dev/null | head -1)
 
 if [[ -f "$SESSION_FILE" ]]; then

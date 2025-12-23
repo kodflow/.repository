@@ -19,7 +19,7 @@ TOOL=$(echo "$INPUT" | jq -r '.tool_name // empty')
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // "N/A"')
 
 # Trouver la session active
-SESSION_DIR="/workspace/.claude/sessions"
+SESSION_DIR="$HOME/.claude/sessions"
 SESSION_FILE=$(ls -t "$SESSION_DIR"/*.json 2>/dev/null | head -1)
 
 # Si pas de session

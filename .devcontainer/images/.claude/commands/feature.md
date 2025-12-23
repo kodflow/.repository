@@ -92,7 +92,7 @@ git checkout -b "$BRANCH" "origin/$MAIN_BRANCH"
   Après validation → BYPASS MODE (exécution)
 
   Branch: feat/<project-name>
-  Session: /workspace/.claude/sessions/<project-name>.json
+  Session: $HOME/.claude/sessions/<project-name>.json
 ═══════════════════════════════════════════════
 ```
 
@@ -151,7 +151,7 @@ Puis `AskUserQuestion: "Valider ce plan ?"`
 Après validation utilisateur :
 
 ```bash
-SESSION_FILE=$(ls -t /workspace/.claude/sessions/*.json | head -1)
+SESSION_FILE=$(ls -t $HOME/.claude/sessions/*.json | head -1)
 PROJECT=$(jq -r '.project' "$SESSION_FILE")
 
 # Créer les epics
@@ -334,7 +334,7 @@ glab mr create --title "feat: $DESCRIPTION" --description "..."
 Reprendre une feature en cours via la session Taskwarrior :
 
 ```bash
-SESSION_DIR="/workspace/.claude/sessions"
+SESSION_DIR="$HOME/.claude/sessions"
 
 # Trouver la session la plus récente (ou spécifier un projet)
 if [[ -n "$1" ]]; then
