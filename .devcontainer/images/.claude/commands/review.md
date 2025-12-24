@@ -279,3 +279,5 @@ URL : <pr_url>
 - `/fix --pr` - Corriger les retours CodeRabbit un par un
 - `/git --commit` - Créer une PR
 - `/git --merge` - Merger la PR
+
+
