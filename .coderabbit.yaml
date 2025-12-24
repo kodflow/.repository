@@ -26,7 +26,7 @@ reviews:
   suggested_reviewers: false
   labeling: false
 
-  # Désactiver le prompt AI agents (redondant avec Claude Code)
+  # Désactiver le prompt AI agents (instructions déjà définies dans CLAUDE.md)
   enable_prompt_for_ai_agents: false
 
   # Fichiers exclus des reviews (simplifiés - CodeRabbit a des defaults)
