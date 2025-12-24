@@ -92,9 +92,9 @@ Creates `fix/<description>` branch, **mandatory planning mode**, CI check, PR cr
 ## Context Hierarchy
 
 ```
-/CLAUDE.md              → Overview (committed)
-/src/CLAUDE.md          → src details (gitignored)
-/src/api/CLAUDE.md      → API details (gitignored)
+/CLAUDE.md              # Overview (committed)
+/src/CLAUDE.md          # src details (gitignored)
+/src/api/CLAUDE.md      # API details (gitignored)
 ```
 
-**Principle:** More details deeper in tree, <60 lines each.
+**Principle:** More details deeper in tree, under 60 lines each.
