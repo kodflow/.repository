@@ -7,6 +7,7 @@ $ARGUMENTS
 ## Description
 
 Recherche d'informations sur les documentations officielles UNIQUEMENT :
+
 - Croise minimum 2 sources pour valider chaque information
 - Questionne l'utilisateur pour affiner la recherche
 - Génère un fichier `.context.md` (non commité) utilisable par `/plan` et `/apply`
@@ -197,6 +198,7 @@ WebFetch({
 | 0 source officielle | ❌ Ne pas inclure |
 
 **Détection des contradictions :**
+
 - Comparer les versions (doc ancienne vs récente)
 - Vérifier les dates de mise à jour
 - Signaler les incohérences à l'utilisateur
@@ -208,6 +210,7 @@ WebFetch({
 **OBLIGATOIRE** : Utiliser AskUserQuestion pour affiner la recherche.
 
 Questions typiques :
+
 - Version spécifique à cibler ?
 - Cas d'usage précis ?
 - Contraintes techniques ?
@@ -415,8 +418,9 @@ rm -f /workspace/.context.md
 | `/fix` | Utilise le context pour rechercher des solutions |
 
 **Détection automatique :**
+
 - Si `.context.md` existe, les commandes l'utilisent automatiquement
-- Affichage d'un message : "Context chargé : <sujet>"
+- Affichage d'un message : "Context chargé : `<sujet>`"
 
 ---
 
