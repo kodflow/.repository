@@ -105,6 +105,7 @@ Taskwarrior  = Ressources déclarées (comme les resources TF)
 ```
 
 **Nouveaux champs v3 :**
+
 - `currentPhase` : Phase en cours (1-6)
 - `completedPhases` : Historique des phases complétées
 - `validated` : Validation utilisateur obtenue (obligatoire avant phase 6)
@@ -279,6 +280,7 @@ fi
 **Objectif :** Comprendre ce que l'utilisateur veut
 
 **Actions :**
+
 - Lire et reformuler la demande
 - Identifier contraintes et exigences
 - Pour un fix : identifier les étapes de reproduction

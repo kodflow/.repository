@@ -8,7 +8,6 @@ set -euo pipefail
 # Lire l'input JSON de Claude
 INPUT=$(cat)
 TOOL=$(echo "$INPUT" | jq -r '.tool_name // empty')
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // "N/A"')
 
 # Trouver la session active
 SESSION_DIR="$HOME/.claude/sessions"
