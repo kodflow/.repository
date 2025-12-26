@@ -100,7 +100,7 @@ echo -e "${GREEN}✓ RubyGems ${GEM_VERSION} installed${NC}"
 # Install Bundler
 echo -e "${YELLOW}Installing Bundler...${NC}"
 gem install bundler 2>/dev/null || sudo gem install bundler 2>/dev/null
-[ -d "$RBENV_ROOT" ] && rbenv rehash 2>/dev/null || true
+if [ -d "$RBENV_ROOT" ]; then rbenv rehash 2>/dev/null || true; fi
 BUNDLER_VERSION=$(bundler --version)
 echo -e "${GREEN}✓ ${BUNDLER_VERSION} installed${NC}"
 
@@ -118,7 +118,7 @@ install_gem() {
     local name=$1
     echo -e "${YELLOW}Installing ${name}...${NC}"
     if gem install "$name" 2>/dev/null || sudo gem install "$name" 2>/dev/null; then
-        [ -d "$RBENV_ROOT" ] && rbenv rehash 2>/dev/null || true
+        if [ -d "$RBENV_ROOT" ]; then rbenv rehash 2>/dev/null || true; fi
         echo -e "${GREEN}✓ ${name} installed${NC}"
     else
         echo -e "${YELLOW}⚠ ${name} failed to install${NC}"
