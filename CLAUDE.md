@@ -93,6 +93,7 @@ mcp_priority:
 ```
 
 **Why MCP-first:**
+
 - MCP servers have pre-configured authentication (tokens in .mcp.json)
 - CLI tools require separate auth (`gh auth login`, etc.)
 - MCP provides structured responses (JSON vs text parsing)

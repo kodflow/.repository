@@ -111,6 +111,7 @@ Creates `fix/<description>` branch, **mandatory planning mode**, CI check, PR cr
 | IDE Diagnostics | `mcp__ide__*` | N/A |
 
 **Rules:**
+
 1. Check `.mcp.json` for available MCP servers
 2. Use `mcp__<server>__<action>` tools first
 3. Only fallback to CLI if MCP fails or is unavailable
@@ -118,6 +119,7 @@ Creates `fix/<description>` branch, **mandatory planning mode**, CI check, PR cr
 5. Log MCP failures before trying fallback
 
 **Why:**
+
 - MCP = pre-authenticated (tokens in .mcp.json)
 - CLI = requires separate auth setup
 - MCP = structured JSON responses

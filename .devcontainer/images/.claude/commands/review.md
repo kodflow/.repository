@@ -13,6 +13,7 @@ Agent de code review IA avec architecture multi-agents "The Hive" :
 - **10 axes d'analyse** : Security, Quality, Tests, Architecture, etc.
 
 **Modes de fonctionnement :**
+
 - **(vide)** : Review locale avec architecture Hive (branche courante)
 - **--coderabbit** : Déclenche une full review CodeRabbit sur la PR
 - **--copilot** : Déclenche une full review GitHub Copilot sur la PR
@@ -280,6 +281,7 @@ L'agent analyse le code selon 10 axes complémentaires, activables individuellem
 ### Axe 4: Architecture & Design (`--architecture`)
 
 **Patterns à détecter :**
+
 - Dépendances circulaires (A→B→C→A)
 - Couplage excessif
 - Cohésion faible
@@ -885,6 +887,7 @@ smart_delta:
 ### Invalidation du cache
 
 Le cache est invalidé si l'un de ces fichiers change :
+
 - `.review.yaml` (config)
 - `package.json`, `go.mod`, `pyproject.toml` (deps)
 - `.eslintrc*`, `ruff.toml` (linter config)
@@ -898,6 +901,7 @@ Le cache est invalidé si l'un de ces fichiers change :
 Déclenche une review CodeRabbit sur la PR GitHub courante.
 
 **Pré-requis :**
+
 - PR existante sur GitHub
 - CodeRabbit configuré sur le repository (`.coderabbit.yaml`)
 
@@ -945,6 +949,7 @@ coderabbit_workflow:
 Déclenche une review GitHub Copilot sur la PR.
 
 **Pré-requis :**
+
 - PR existante sur GitHub
 - GitHub Copilot for Pull Requests activé
 
@@ -976,6 +981,7 @@ copilot_workflow:
 Lance une analyse Codacy CLI locale.
 
 **Pré-requis :**
+
 - Codacy CLI installé (ou disponible via MCP)
 
 **Comportement :**
@@ -990,6 +996,7 @@ mcp__codacy__codacy_cli_analyze \
 ```
 
 **Output :**
+
 - Résultats affichés dans la console
 - Format compatible avec les issues Codacy
 
