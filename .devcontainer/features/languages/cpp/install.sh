@@ -71,11 +71,21 @@ if [ -d "/usr/src/gtest" ] || [ -d "/usr/src/googletest" ]; then
     cd "$GTEST_SRC"
     sudo cmake -B build -DCMAKE_BUILD_TYPE=Release .
     sudo cmake --build build --parallel
-    sudo cp build/lib/*.a /usr/lib/ 2>/dev/null || sudo cp build/*.a /usr/lib/ 2>/dev/null || true
+    # Copy libraries with proper error handling
+    if sudo cp build/lib/*.a /usr/lib/ 2>/dev/null; then
+        echo -e "${GREEN}✓ Google Test libraries copied from build/lib/${NC}"
+    elif sudo cp build/*.a /usr/lib/ 2>/dev/null; then
+        echo -e "${GREEN}✓ Google Test libraries copied from build/${NC}"
+    else
+        echo -e "${RED}✗ Failed to copy Google Test libraries${NC}"
+        echo -e "${YELLOW}  Check build output for errors${NC}"
+        exit 1
+    fi
     cd - > /dev/null
     echo -e "${GREEN}✓ Google Test installed (headers + libraries)${NC}"
 else
-    echo -e "${YELLOW}⚠ Google Test sources not found, headers only${NC}"
+    echo -e "${RED}✗ Google Test sources not found - required for linking${NC}"
+    exit 1
 fi
 
 # cppcheck (static analysis)

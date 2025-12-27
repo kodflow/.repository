@@ -114,12 +114,13 @@ CARGO_TOOLS=(
     "cargo-edit"        # Dependency management (add/remove)
 )
 
+# Install tools - use || true to continue on failure (tracked in FAILED_TOOLS)
 for tool in "${CARGO_TOOLS[@]}"; do
-    install_cargo_tool "$tool"
+    install_cargo_tool "$tool" || true
 done
 
 # MCP server (may not have prebuilt binaries)
-install_cargo_tool "rust-analyzer-mcp"
+install_cargo_tool "rust-analyzer-mcp" || true
 
 # Summary of tool installations
 if [ ${#FAILED_TOOLS[@]} -gt 0 ]; then

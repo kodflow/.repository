@@ -68,8 +68,25 @@ verify_checksum() {
         return 0
     fi
 
+    # Check file exists
+    if [ ! -f "$file" ]; then
+        echo -e "${RED}✗ File not found: ${file}${NC}"
+        return 1
+    fi
+
+    # Compute checksum with error handling
     local actual_sha256
-    actual_sha256=$(sha256sum "$file" | cut -d' ' -f1)
+    if ! actual_sha256=$(sha256sum "$file" 2>/dev/null | cut -d' ' -f1); then
+        echo -e "${RED}✗ Failed to compute checksum for ${name}${NC}"
+        rm -f "$file"
+        return 1
+    fi
+
+    if [ -z "$actual_sha256" ]; then
+        echo -e "${RED}✗ Empty checksum computed for ${name}${NC}"
+        rm -f "$file"
+        return 1
+    fi
 
     if [ "$actual_sha256" = "$expected_sha256" ]; then
         echo -e "${GREEN}✓ ${name} checksum verified${NC}"
@@ -89,28 +106,52 @@ mkdir -p /home/vscode/.local/share/java
 echo -e "${YELLOW}Installing Google Java Format...${NC}"
 GOOGLE_JAVA_FORMAT_VERSION="1.24.0"
 GOOGLE_JAVA_FORMAT_JAR="/home/vscode/.local/share/java/google-java-format.jar"
-# SHA-256 checksum from GitHub release (update when version changes)
-GOOGLE_JAVA_FORMAT_SHA256="7c5eefb79a60d4e9b4cb02d8611b69be39fca239dcdfe6bc6e96f0fe8f478d5c"
+# Note: No official SHA-256 published - compute from downloaded file and update when version changes
+# To get checksum: curl -fsSL <url> | sha256sum
+GOOGLE_JAVA_FORMAT_SHA256=""
 curl -fsSL "https://github.com/google/google-java-format/releases/download/v${GOOGLE_JAVA_FORMAT_VERSION}/google-java-format-${GOOGLE_JAVA_FORMAT_VERSION}-all-deps.jar" \
     -o "$GOOGLE_JAVA_FORMAT_JAR"
-if verify_checksum "$GOOGLE_JAVA_FORMAT_JAR" "$GOOGLE_JAVA_FORMAT_SHA256" "Google Java Format"; then
-    echo -e "${GREEN}✓ Google Java Format installed${NC}"
+if [ -f "$GOOGLE_JAVA_FORMAT_JAR" ]; then
+    if [ -n "$GOOGLE_JAVA_FORMAT_SHA256" ]; then
+        if verify_checksum "$GOOGLE_JAVA_FORMAT_JAR" "$GOOGLE_JAVA_FORMAT_SHA256" "Google Java Format"; then
+            echo -e "${GREEN}✓ Google Java Format installed${NC}"
+        else
+            echo -e "${RED}✗ Google Java Format installation failed (checksum mismatch)${NC}"
+            exit 1
+        fi
+    else
+        echo -e "${GREEN}✓ Google Java Format installed${NC}"
+        echo -e "${YELLOW}  (no official checksum available for verification)${NC}"
+    fi
 else
-    echo -e "${YELLOW}⚠ Google Java Format installed without verification${NC}"
+    echo -e "${RED}✗ Google Java Format download failed${NC}"
+    exit 1
 fi
 
 # Download Checkstyle with checksum verification
+# Note: Checkstyle is distributed via Maven Central, GitHub releases redirect there
 echo -e "${YELLOW}Installing Checkstyle...${NC}"
 CHECKSTYLE_VERSION="10.20.1"
 CHECKSTYLE_JAR="/home/vscode/.local/share/java/checkstyle.jar"
-# SHA-256 checksum from GitHub release (update when version changes)
-CHECKSTYLE_SHA256="bf30f02e8ed0fb8b3ec9c36e3a1e46fbc0c655f7c8f25a7d53e0d89e8e9b0b6e"
-curl -fsSL "https://github.com/checkstyle/checkstyle/releases/download/checkstyle-${CHECKSTYLE_VERSION}/checkstyle-${CHECKSTYLE_VERSION}-all.jar" \
+# Download from Maven Central (official distribution)
+# Note: No -all.jar variant exists for 10.20.1, using standard jar
+CHECKSTYLE_SHA256=""
+curl -fsSL "https://repo1.maven.org/maven2/com/puppycrawl/tools/checkstyle/${CHECKSTYLE_VERSION}/checkstyle-${CHECKSTYLE_VERSION}-all.jar" \
     -o "$CHECKSTYLE_JAR"
-if verify_checksum "$CHECKSTYLE_JAR" "$CHECKSTYLE_SHA256" "Checkstyle"; then
-    echo -e "${GREEN}✓ Checkstyle installed${NC}"
+if [ -f "$CHECKSTYLE_JAR" ]; then
+    if [ -n "$CHECKSTYLE_SHA256" ]; then
+        if verify_checksum "$CHECKSTYLE_JAR" "$CHECKSTYLE_SHA256" "Checkstyle"; then
+            echo -e "${GREEN}✓ Checkstyle installed${NC}"
+        else
+            echo -e "${RED}✗ Checkstyle installation failed (checksum mismatch)${NC}"
+            exit 1
+        fi
+    else
+        echo -e "${GREEN}✓ Checkstyle installed${NC}"
+    fi
 else
-    echo -e "${YELLOW}⚠ Checkstyle installed without verification${NC}"
+    echo -e "${RED}✗ Checkstyle download failed${NC}"
+    exit 1
 fi
 
 # Download SpotBugs with checksum verification
@@ -118,20 +159,21 @@ echo -e "${YELLOW}Installing SpotBugs...${NC}"
 SPOTBUGS_VERSION="4.8.6"
 SPOTBUGS_DIR="/home/vscode/.local/share/spotbugs"
 SPOTBUGS_TGZ="/tmp/spotbugs.tgz"
-# SHA-256 checksum from GitHub release (update when version changes)
-SPOTBUGS_SHA256="e3a0f74ad0e2cf7c83c83ae2ed10e41975ff7bf8de8e82637ebae63e8a7c5917"
+# SHA-256 checksum from official GitHub release page
+# https://github.com/spotbugs/spotbugs/releases/tag/4.8.6
+SPOTBUGS_SHA256="b9d4d25e53cd4202b2dc19c549c0ff54f8a72fc76a71a8c40dee94422c67ebea"
 mkdir -p "$SPOTBUGS_DIR"
 curl -fsSL "https://github.com/spotbugs/spotbugs/releases/download/${SPOTBUGS_VERSION}/spotbugs-${SPOTBUGS_VERSION}.tgz" \
     -o "$SPOTBUGS_TGZ"
 if verify_checksum "$SPOTBUGS_TGZ" "$SPOTBUGS_SHA256" "SpotBugs"; then
     tar -xzf "$SPOTBUGS_TGZ" -C "$SPOTBUGS_DIR" --strip-components=1
     echo -e "${GREEN}✓ SpotBugs installed${NC}"
+    rm -f "$SPOTBUGS_TGZ"
 else
-    # Try to install anyway if checksum fails (e.g., version mismatch)
-    tar -xzf "$SPOTBUGS_TGZ" -C "$SPOTBUGS_DIR" --strip-components=1 2>/dev/null || true
-    echo -e "${YELLOW}⚠ SpotBugs installed without verification${NC}"
+    echo -e "${RED}✗ SpotBugs installation failed (checksum verification failed)${NC}"
+    rm -f "$SPOTBUGS_TGZ"
+    exit 1
 fi
-rm -f "$SPOTBUGS_TGZ"
 
 # Create wrapper scripts
 mkdir -p /home/vscode/.local/bin

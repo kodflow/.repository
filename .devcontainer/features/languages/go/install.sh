@@ -135,9 +135,10 @@ get_github_version() {
     local repo=$1
     local fallback=$2
     local version
+    # Use portable sed instead of grep -oP (PCRE not available on all systems)
     version=$(curl -s --connect-timeout 5 --max-time 10 \
         "https://api.github.com/repos/${repo}/releases/latest" 2>/dev/null \
-        | grep -oP '"tag_name": "\K[^"]+' | sed 's/^v//')
+        | sed -n 's/.*"tag_name": *"v\?\([^"]*\)".*/\1/p' | head -n 1)
     echo "${version:-$fallback}"
 }
 
